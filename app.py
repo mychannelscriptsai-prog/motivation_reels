@@ -27,12 +27,15 @@ class MergeRequest(BaseModel):
 
 
 def _download(url: str, out_path: Path) -> None:
-    with requests.get(url, stream=True, timeout=60) as r:
-        r.raise_for_status()
-        with open(out_path, "wb") as f:
-            for chunk in r.iter_content(chunk_size=1024 * 1024):
-                if chunk:
-                    f.write(chunk)
+    try:
+        with requests.get(url, stream=True, timeout=60, allow_redirects=True) as r:
+            r.raise_for_status()
+            with open(out_path, "wb") as f:
+                for chunk in r.iter_content(chunk_size=1024*1024):
+                    if chunk:
+                        f.write(chunk)
+    except Exception as e:
+        raise RuntimeError(f"Download failed for {url}: {e}")
 
 
 def _run_ffmpeg(
