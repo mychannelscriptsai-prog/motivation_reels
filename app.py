@@ -16,11 +16,11 @@ app = FastAPI()
 
 
 class MergeRequest(BaseModel):
-    scene34_url: HttpUrl
-    scene35_url: HttpUrl
-    scene37_url: HttpUrl
-    cta_url: HttpUrl
-    voice_url: HttpUrl
+    scene34_url: str
+    scene35_url: str
+    scene37_url: str
+    cta_url: str
+    voice_url: str
     total_duration_sec: int = 28
     cta_duration_sec: int = 6
     music_volume: float = 0.15
