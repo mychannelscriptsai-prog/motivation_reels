@@ -39,13 +39,13 @@ def _download(url: str, out_path: Path) -> None:
 
 
 def _run_ffmpeg(
-    scene_paths: list[Path],
-    cta_path: Path,
-    audio_path: Path,
-    out_path: Path,
-    total_duration: int,
-    cta_duration: int,
-    volume: float
+    scene_paths=scene_paths,
+    cta_path=cta_path,
+    audio_path=audio_path,
+    out_path=out_path,
+    total_duration=total_duration,  # dynamisch
+    cta_duration=req.cta_duration_sec,
+    volume=req.music_volume
 ) -> None:
     pexels_total = total_duration - cta_duration
     scene_dur = pexels_total / 3
@@ -122,8 +122,26 @@ def merge(req: MergeRequest):
             _download(req.scene35_url, scene_paths[1])
             _download(req.scene37_url, scene_paths[2])
             _download(req.cta_url, cta_path)
-            _download(req.voice_url, audio_path)
+            _download(req.voice_url, audio_path) 
+            
+# Bereken lengte van de voice-over met ffprobe
+def get_audio_duration(audio_file: Path) -> float:
+    """
+    Return duration in seconds of an audio file using ffprobe
+    """
+    cmd = [
+        "ffprobe", "-v", "error",
+        "-show_entries", "format=duration",
+        "-of", "default=noprint_wrappers=1:nokey=1",
+        str(audio_file)
+    ]
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    return float(result.stdout.strip())
 
+voice_duration = get_audio_duration(audio_path)
+
+# Stel totale video lengte gelijk aan voice-over
+total_duration = max(voice_duration, req.total_duration_sec)
             _run_ffmpeg(
                 scene_paths=scene_paths,
                 cta_path=cta_path,
