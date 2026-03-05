@@ -54,7 +54,7 @@ def _run_ffmpeg(
     inputs = []
     for s in scene_paths:
         inputs.extend(["-stream_loop", "-1", "-i", str(s)])
-    inputs.extend(["-stream_loop", "-1", "-i", str(cta_path), "-stream_loop", "-1", "-i", str(audio_path)])
+    inputs.extend(["-stream_loop", "-1", "-i", str(cta_path), "-i", str(audio_path)])
 
     # Video filters
     vf = ""
@@ -147,7 +147,7 @@ total_duration = max(voice_duration, req.total_duration_sec)
                 cta_path=cta_path,
                 audio_path=audio_path,
                 out_path=out_path,
-                total_duration=req.total_duration_sec,
+                total_duration=req.total_duration,
                 cta_duration=req.cta_duration_sec,
                 volume=req.music_volume
             )
