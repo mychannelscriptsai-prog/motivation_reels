@@ -21,7 +21,7 @@ class MergeRequest(BaseModel):
     scene37_url: str
     cta_url: str
     voice_url: str
-    total_duration_sec: int = 28
+    total_duration_sec: int = 10
     cta_duration_sec: int = 6
     music_volume: float = 0.15
 
